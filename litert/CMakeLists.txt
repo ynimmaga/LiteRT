@@ -92,6 +92,10 @@ option(LITERT_ENABLE_GPU "Enable GPU acceleration support" ON)
 option(LITERT_ENABLE_NPU "Enable NPU acceleration support" ON)
 option(LITERT_DISABLE_KLEIDIAI "Disable KleidiAI delegate when bundling host TFLite (default ON for Linux/macOS x86_64 hosts)" ${_litert_disable_kleidiai_default})
 
+# Extra CMake arguments forwarded to the inner TFLite configure
+set(TFLITE_EXTRA_CMAKE_ARGS ""
+    CACHE STRING "Extra CMake arguments passed to the TFLite CMake configure step")
+
 set(LITERT_HOST_C_COMPILER "" CACHE FILEPATH "Host C compiler used for helper host-side tools (e.g. FlatBuffers flatc)")
 set(LITERT_HOST_CXX_COMPILER "" CACHE FILEPATH "Host C++ compiler used for helper host-side tools (e.g. FlatBuffers flatc)")
 
@@ -208,6 +212,10 @@ if(NOT EXISTS "${TFLITE_BUILD_DIR}/libtensorflow-lite.a")
           endif()
 
           list(APPEND _tflite_extra_args -DTFLITE_HOST_TOOLS_DIR=${TFLITE_HOST_TOOLS_DIR})
+        endif()
+        if(TFLITE_EXTRA_CMAKE_ARGS)
+            separate_arguments(TFLITE_EXTRA_CMAKE_ARGS)
+            list(APPEND _tflite_extra_args ${TFLITE_EXTRA_CMAKE_ARGS})
         endif()
         execute_process(
             COMMAND ${CMAKE_COMMAND} "${TFLITE_SOURCE_DIR}"

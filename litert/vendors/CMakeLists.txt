@@ -268,3 +268,14 @@ if(LITERT_ENABLE_QUALCOMM)
   # Use modular CMake structure for Qualcomm
   add_subdirectory(qualcomm)
 endif()
+
+# Intel OpenVINO
+option(LITERT_ENABLE_OPENVINO "Enable Intel OpenVINO dispatch build" OFF)
+if(DEFINED ENV{OpenVINO_DIR} AND NOT LITERT_ENABLE_OPENVINO)
+    message(STATUS "Enabling Intel OpenVINO dispatch: OpenVINO detected at $ENV{OpenVINO_DIR}")
+    set(LITERT_ENABLE_OPENVINO ON CACHE BOOL "" FORCE)
+endif()
+if(LITERT_ENABLE_OPENVINO)
+    # Use modular CMake structure for OpenVINO
+    add_subdirectory(intel_openvino)
+endif()
